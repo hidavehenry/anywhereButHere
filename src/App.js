@@ -1,6 +1,6 @@
 import './App.css';
 import Input from './components/Input'
-import axios from 'axios'
+// import axios from 'axios'
 
 function App() {
 
@@ -19,21 +19,23 @@ function App() {
   */
 
   // API CALL FOR SEARCH
-  axios( {
-    method:'GET',
-    url: 'https://www.mapquestapi.com/search/v4/place',
-    responseType: 'json',
-      params: {
-        location: [-79.41753141902342, 43.649976291114896],
-        sort: 'distance',
-        key: '70bf0d125d0d890aaada4fc8639854d0',
-        feedback: false,
-        circle: [-79.41753141902342, 43.649976291114896, 5000],
-        q: `coffee`
-      }
-    }).then(function (res) {
-      console.log(res);
-    });
+  // axios( {
+  //   method:'GET',
+  //   url: 'https://www.mapquestapi.com/search/v4/place',
+  //   responseType: 'json',
+  //     params: {
+  //       location: [-79.41753141902342, 43.649976291114896],
+  //       sort: 'distance',
+  //       key: '70bf0d125d0d890aaada4fc8639854d0',
+  //       feedback: false,
+  //       circle: [-79.41753141902342, 43.649976291114896, 5000],
+  //       q: `coffee`
+  //     }
+  //   }).then(function (res) {
+  //     console.log(res);
+  //   });
+
+    
 
   return (
     <div>
