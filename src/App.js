@@ -1,4 +1,5 @@
 import './App.css';
+import Directions from './components/Directions';
 import Input from './components/Input'
 function App() {
 
@@ -32,19 +33,14 @@ url.search = new URLSearchParams({
 fetch(url)
   .then(response => response.json())
   .then(data => {
-    console.log(data)
+    // console.log(data)
   });
-  
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data)
-    });
-  
+
 
   return (
     <div>
       <Input />
+      <Directions />
     </div>
   );
 }
