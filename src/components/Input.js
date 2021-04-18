@@ -1,29 +1,26 @@
 import React from 'react'
+import { useState } from 'react'
 
 const Input = ( props ) => {
 
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else { 
-            console.log('no location')
-        }
-        }
-    
-        // NEED TO STORE THIS IN A STATE? 
-        function showPosition(position) {
-        console.log(position.coords.latitude) 
-        console.log(position.coords.longitude)
-        }
-
     return (
-        <div>
-            <form>
-                <label>WORDS</label>
-                <input type="text"></input> 
-                <button onClick={getLocation}>Get my Location</button>
-            </form>
+        <div className="sectionWrapper">
+            <div className="userLocation">
+                <form>
+                    <label htmlFor="userAddress" className="sr-only">Type your address</label>
+                    <input id="userAddress" type="text" placeholder="type your address" value=""></input> 
+                    <button onClick={props.getLocation}>Use my Location</button>
+                </form>
+            </div>
+            <div className="userSearch">
+                <form>
+                <label htmlFor="destination" className="sr-only">Where do you want to go?</label>
+                    <input id="destination" type="text" placeholder="Where do you want to go?" onChange={props.handleQChange} ></input> 
+                    <button>Take me there!</button>
+                </form>
+            </div>
         </div>
+        
     )
 }
 

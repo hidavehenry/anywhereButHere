@@ -1,7 +1,41 @@
 import './App.css';
 import Directions from './components/Directions';
-import Input from './components/Input'
+import Input from './components/Input';
+import Header from './Header';
+import { useState } from 'react'
+
 function App() {
+
+  const [userCoords, setUserCoords] = useState([])
+  const [userCoordsRadius, setUserCoordsRadius] = useState([])
+  const [searchParam, setSearchParam] = useState('')
+    
+  const handleQChange = (event) => {
+    setSearchParam(event.target.value);
+  }
+
+    function getLocation(e) {
+        e.preventDefault();
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else { 
+            console.log('no location')
+        }
+        }
+    
+        // NEED TO STORE THIS IN A STATE? 
+        function showPosition(position) {
+
+            setUserCoords([position.coords.longitude, position.coords.latitude]);
+
+            setUserCoordsRadius([position.coords.longitude, position.coords.latitude, 5000]);
+      
+            
+
+            // console.log(userCoords)
+
+            // const userLocation = [position.coords.latitude, position.coords.longitude]
+        }
 
   /* 
   Create component to take user input
@@ -22,24 +56,26 @@ const proxiedUrl = 'https://www.mapquestapi.com/search/v4/place';
 const url = new URL('https://proxy.hackeryou.com');
 url.search = new URLSearchParams({
   reqUrl: proxiedUrl,
-  'params[location]': [-79.41753141902342, 43.649976291114896],
+  'params[location]': {userCoords},
   'params[sort]': 'distance',
   'params[key]': 'WWEYdye9aFyaPW4k4kRFXHMfKiFe4bHT',
-  'params[circle]': [-79.41753141902342, 43.649976291114896, 5000],
-  'params[q]': 'coffee',
+  'params[circle]': {userCoordsRadius},
+  'params[q]': {searchParam},
   'proxyHeaders[Accept]': 'application/json',
 });
 
 fetch(url)
   .then(response => response.json())
   .then(data => {
-    // console.log(data)
+    console.log(data)
   });
 
 
   return (
-    <div>
-      <Input />
+
+    <div className="wrapper">
+      <Header />
+      <Input getLocation={getLocation} handleQChange={handleQChange}/>
       <Directions />
     </div>
   );
