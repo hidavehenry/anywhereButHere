@@ -1,24 +1,6 @@
 import {useState, useEffect} from 'react';
 
-
-const Directions = () => {
-
-  const [userFrom, setUserFrom] = useState('');
-  const [userTo, setUserTo] = useState('');
-
-  const handleChangeFrom = (event) => {
-    console.log(event.target.value);
-  }
-
-  const handleChangeTo = (event) => {
-    console.log(event.target.value);
-  }
-
-  const handleClick = (event) => {
-    event.preventDefault();
-    setUserFrom(event.target.value);
-    setUserTo(event.target.value);
-  }
+const Directions = (props) => {
 
 const directionsApi = (userFrom, userTo) => {
     const proxiedUrl = 'https://www.mapquestapi.com/directions/v2/route';
@@ -28,8 +10,8 @@ const directionsApi = (userFrom, userTo) => {
       'params[key]': 'WWEYdye9aFyaPW4k4kRFXHMfKiFe4bHT',
       'params[unit]': 'k',
       'params[routeType]': 'fastest',
-      'params[from]': userFrom,
-      'params[to]': userTo,
+      'params[from]': props.from,
+      'params[to]': props.to,
       'params[doReverseGeocode]': false,
       'params[enhancedNarrative]': false,
       'params[avoidTimedConditions]': false,
@@ -55,7 +37,7 @@ const directionsApi = (userFrom, userTo) => {
 
     return (
         <div>
-          <form>
+          {/* <form>
                 <label htmlFor="from">from</label>
                 <input 
                   type="text" 
@@ -73,10 +55,7 @@ const directionsApi = (userFrom, userTo) => {
                 /> 
 
                 <button onClick={handleClick}>Take me there!</button>
-          </form>
-          <p>
-            You are going from {userFrom} to {userTo}!
-          </p>
+          </form> */}
         </div>
     )
 }
