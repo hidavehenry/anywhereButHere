@@ -1,6 +1,7 @@
-import {useState, useEffect} from 'react';
+import {useEffect} from 'react';
 
 const Directions = (props) => {
+
 
     const proxiedUrl = 'https://www.mapquestapi.com/directions/v2/route';
     const url = new URL('https://proxy.hackeryou.com');
@@ -10,7 +11,7 @@ const Directions = (props) => {
       'params[unit]': 'k',
       'params[routeType]': 'fastest',
       'params[from]': `8405 avenue de l'epee`,
-      'params[to]': `8405 avenue de l'epee`,
+      'params[to]': `1000 Rue Legendre O, Montréal, QC H4N`,
       'params[doReverseGeocode]': false,
       'params[enhancedNarrative]': false,
       'params[avoidTimedConditions]': false,
@@ -28,12 +29,11 @@ useEffect( () => {
           console.log(value.narrative);
         })
         })
-        // console.log(directionsNarrative);
-      }, [])
+}, [props])
 
     return (
         <div>
-          <h2>hi</h2>
+          <h2>Take me to {props.name}</h2>
         </div>
     )
 

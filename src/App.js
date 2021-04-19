@@ -3,6 +3,8 @@ import Input from './components/Input';
 import Header from './Header';
 import ListOfPlaces from './components/ListOfPlaces'
 import { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Directions from './components/Directions';
 
 function App() {
 
@@ -115,20 +117,21 @@ fetch(geoUrl)
 console.log(searchParam);
 
   return (
-
-    <div className="wrapper">
-      <Header />
-      <Input 
-        getLocation={getLocation} 
-        handleQChange={handleQChange}
-        handleFrom={handleFrom}
-        userInput={userInput}
-        takeMeThere={takeMeThere}
-      />
-      <ListOfPlaces destination={destination} userCoords={userCoords}/>
-
-    </div>
-  );
+    <Router>
+      <div className="wrapper">
+        <Header />
+        <Input 
+          getLocation={getLocation} 
+          handleQChange={handleQChange}
+          handleFrom={handleFrom}
+          userInput={userInput}
+          takeMeThere={takeMeThere}
+        />
+        <ListOfPlaces destination={destination} userCoords={userCoords}/>
+        <Route exact path="/directions" component={Directions}/>
+      </div>
+    </Router>
+  )
 }
 
 export default App;
