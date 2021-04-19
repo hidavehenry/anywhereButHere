@@ -1,5 +1,8 @@
+// import Directions from './Directions';
 
 const ListOfPlaces = (props) => {
+
+console.log(props.destination);
 
 
     return(
@@ -7,10 +10,11 @@ const ListOfPlaces = (props) => {
             <ul>
                 {props.destination.map( (place) => {
                     return(
-                        <li>{place.displayString}</li>
+                        <li key={place.id}>{place.displayString}</li>
                     )
                 } )}
             </ul>
+                  {/* <Directions userCoords={props.userCoords} userTo={}/> */}
         </div>
     )
 }

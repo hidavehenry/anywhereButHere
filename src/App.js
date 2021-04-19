@@ -1,5 +1,4 @@
 import './App.css';
-import Directions from './components/Directions';
 import Input from './components/Input';
 import Header from './Header';
 import ListOfPlaces from './components/ListOfPlaces'
@@ -50,11 +49,11 @@ const proxiedUrl = 'https://www.mapquestapi.com/search/v4/place';
 const url = new URL('https://proxy.hackeryou.com');
 url.search = new URLSearchParams({
   reqUrl: proxiedUrl,
-  'params[location]': [-73.6406567450008, 45.53282752557711],
+  'params[location]': userCoords,
   'params[sort]': 'distance',
-  'params[key]': 'WWEYdye9aFyaPW4k4kRFXHMfKiFe4bHT',
-  'params[circle]': [-73.64065674779799, 45.53287694474777, 5000],
-  'params[q]': `coffee`,
+  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+  'params[circle]': userCoordsRadius,
+  'params[q]': searchParam,
   'proxyHeaders[Accept]': 'application/json',
 });
 
@@ -77,7 +76,7 @@ const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
 const url4 = new URL('https://proxy.hackeryou.com');
 url4.search = new URLSearchParams({
   reqUrl: proxiedUrl4,
-  'params[key]': 'WWEYdye9aFyaPW4k4kRFXHMfKiFe4bHT',
+  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
   'proxyHeaders[Accept]': 'application/json',
   'params[location]': {userInput}
 });
@@ -126,8 +125,8 @@ console.log(searchParam);
         userInput={userInput}
         takeMeThere={takeMeThere}
       />
-      <ListOfPlaces destination={destination}/>
-      {/* <Directions from={userCoords}/> */}
+      <ListOfPlaces destination={destination} userCoords={userCoords}/>
+
     </div>
   );
 }
