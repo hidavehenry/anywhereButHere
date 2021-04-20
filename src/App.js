@@ -1,9 +1,9 @@
 import './App.css';
-import Directions from './components/Directions';
 import Input from './components/Input';
 import Header from './Header';
 import ListOfPlaces from './components/ListOfPlaces'
 import { useEffect, useState } from 'react'
+import Directions from './components/Directions';
 
 function App() {
 
@@ -12,7 +12,7 @@ function App() {
   const [searchParam, setSearchParam] = useState('')
   const [userStreet, setUserStreet] = useState('')
   const [userInput, setUserInput] = useState('')
-  const [myJourney, setMyJourney] = useState('')
+  const [myJourney, setMyJourney] = useState([])
   const [destination, setDestination] = useState([]);
     
   const handleQChange = (event) => {
@@ -50,11 +50,11 @@ const proxiedUrl = 'https://www.mapquestapi.com/search/v4/place';
 const url = new URL('https://proxy.hackeryou.com');
 url.search = new URLSearchParams({
   reqUrl: proxiedUrl,
-  'params[location]': [-73.6406567450008, 45.53282752557711],
+  'params[location]': userCoords,
   'params[sort]': 'distance',
-  'params[key]': 'WWEYdye9aFyaPW4k4kRFXHMfKiFe4bHT',
-  'params[circle]': [-73.64065674779799, 45.53287694474777, 5000],
-  'params[q]': `coffee`,
+  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+  'params[circle]': userCoordsRadius,
+  'params[q]': searchParam,
   'proxyHeaders[Accept]': 'application/json',
 });
 
@@ -77,7 +77,7 @@ const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
 const url4 = new URL('https://proxy.hackeryou.com');
 url4.search = new URLSearchParams({
   reqUrl: proxiedUrl4,
-  'params[key]': 'WWEYdye9aFyaPW4k4kRFXHMfKiFe4bHT',
+  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
   'proxyHeaders[Accept]': 'application/json',
   'params[location]': {userInput}
 });
@@ -90,7 +90,7 @@ fetch(url4)
     setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
     console.log(userCoords);
   });
-}, [myJourney])
+}, [])
 
 
   //TEST FOR REVERSE GEOLOCATION
@@ -109,27 +109,55 @@ fetch(geoUrl)
   .then(geodata => {
    setUserStreet(geodata.results[0].locations[0].street)
    console.log(geodata.results[0].locations[0].street)
-  //  console.log(userStreet)
   });
 }, [])
 
-console.log(searchParam);
+
+// API CALL FOR DIRECTIONS
+const proxiedUrl3 = 'https://www.mapquestapi.com/directions/v2/route';
+const url3 = new URL('https://proxy.hackeryou.com');
+url3.search = new URLSearchParams({
+  reqUrl: proxiedUrl3,
+  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+  'params[unit]': 'k',
+  'params[routeType]': 'fastest',
+  'params[from]': `8405 avenue de l'epee`,
+  'params[to]': `1000 Rue Legendre O, Montréal, QC H4N`,
+  'params[doReverseGeocode]': false,
+  'params[enhancedNarrative]': false,
+  'params[avoidTimedConditions]': false,
+  'params[narrativeType]': 'text',
+  'proxyHeaders[Accept]': 'application/json',
+  'params[outFormat]': 'JSON',
+});
+
+useEffect( () => {
+  fetch(url3)
+    .then(response => response.json())
+    .then( (data) => {
+      console.log(data.route.legs[0].maneuvers)
+      setMyJourney(data.route.legs[0].maneuvers)
+      // const directionsNarrative = directions.map( (value) => {
+      //   console.log(value.narrative);
+      // })
+      })
+}, [])
+
 
   return (
+      <div className="wrapper">
+        <Header />
+        <Input 
+          getLocation={getLocation} 
+          handleQChange={handleQChange}
+          handleFrom={handleFrom}
+          userInput={userInput}
+          takeMeThere={takeMeThere}
+        />
+        <ListOfPlaces destination={destination} userCoords={userCoords} myJourney={myJourney}/>
+      </div>
 
-    <div className="wrapper">
-      <Header />
-      <Input 
-        getLocation={getLocation} 
-        handleQChange={handleQChange}
-        handleFrom={handleFrom}
-        userInput={userInput}
-        takeMeThere={takeMeThere}
-      />
-      <ListOfPlaces destination={destination}/>
-      {/* <Directions from={userCoords}/> */}
-    </div>
-  );
+  )
 }
 
 export default App;
