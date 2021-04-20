@@ -35,18 +35,22 @@ input {
   text-transform: uppercase;
   letter-spacing: .1rem;
   font-family: 'Roboto Condensed', sans-serif;
+  padding: 15px;
+  margin: 5px;
 }
 
 button {
   color: white;
   background: black;
   border: none;
-  padding: 15px 20px;
+  transition: color .2s ease-in-out;
 }
 
-input {
-  padding: 15px;
-  margin: 5px;
+button:hover,
+button:focus {
+  cursor: pointer;
+  color: #ff0;
+  outline: 1px solid yellow;
 }
 
 input:focus {
@@ -85,6 +89,22 @@ h1 {
   font-family: 'Roboto Condensed', sans-serif;
 }
 
+ul {
+  width: 45%;
+}
+
+li {
+  list-style-type: none;
+  display: inline-block;
+  padding: 5px 0;
+  margin: 2px 0;
+  line-height: 1.5;
+}
+
+li:hover {
+  cursor: pointer;
+  color: blue;
+}
 
 
 
