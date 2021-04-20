@@ -128,7 +128,7 @@ console.log(searchParam);
           takeMeThere={takeMeThere}
         />
         <ListOfPlaces destination={destination} userCoords={userCoords}/>
-        <Route exact path="/directions" component={Directions}/>
+        <Route path="/directions" component={Directions}/>
       </div>
     </Router>
   )
