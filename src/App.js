@@ -110,11 +110,40 @@ fetch(geoUrl)
   .then(geodata => {
    setUserStreet(geodata.results[0].locations[0].street)
    console.log(geodata.results[0].locations[0].street)
-  //  console.log(userStreet)
   });
 }, [])
 
 console.log(searchParam);
+
+// API CALL FOR DIRECTIONS
+const proxiedUrl3 = 'https://www.mapquestapi.com/directions/v2/route';
+const url3 = new URL('https://proxy.hackeryou.com');
+url3.search = new URLSearchParams({
+  reqUrl: proxiedUrl3,
+  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+  'params[unit]': 'k',
+  'params[routeType]': 'fastest',
+  'params[from]': {userCoords},
+  'params[to]': {userInput},
+  'params[doReverseGeocode]': false,
+  'params[enhancedNarrative]': false,
+  'params[avoidTimedConditions]': false,
+  'params[narrativeType]': 'text',
+  'proxyHeaders[Accept]': 'application/json',
+  'params[outFormat]': 'JSON',
+});
+
+useEffect( () => {
+fetch(url3)
+  .then(response => response.json())
+  .then( (data) => {
+    const directions = data.route.legs[0].maneuvers;
+    const directionsNarrative = directions.map( (value) => {
+      console.log(value.narrative);
+    })
+    })
+}, [])
+
 
   return (
     <Router>
