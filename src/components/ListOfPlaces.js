@@ -1,21 +1,25 @@
-import Directions from './Directions';
-import { Link } from 'react-router-dom';
+import Directions from "./Directions"
 
 const ListOfPlaces = (props) => {
-
-
+    
+    const myJourney = props.myJourney; 
+    const directionsClick = () => {
+        return(
+            <div>
+                <Directions myJourney={myJourney}/>
+            </div>
+        )
+    }
 
     return(
         <div>
             <ul>
                 {props.destination.map( (place) => {
-                    // console.log(place)
+                    console.log(place)
                     return(
-                            <Link to={`/directions${place.slug}`} key={place.id}>
-                                <li>
-                                    {place.displayString}
-                                </li>
-                            </Link>
+                            <li onClick={ directionsClick }>
+                                {place.displayString}
+                            </li>
                     )
                 })
                 }

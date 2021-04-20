@@ -3,7 +3,6 @@ import Input from './components/Input';
 import Header from './Header';
 import ListOfPlaces from './components/ListOfPlaces'
 import { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Directions from './components/Directions';
 
 function App() {
@@ -13,7 +12,7 @@ function App() {
   const [searchParam, setSearchParam] = useState('')
   const [userStreet, setUserStreet] = useState('')
   const [userInput, setUserInput] = useState('')
-  const [myJourney, setMyJourney] = useState('')
+  const [myJourney, setMyJourney] = useState([])
   const [destination, setDestination] = useState([]);
     
   const handleQChange = (event) => {
@@ -91,7 +90,7 @@ fetch(url4)
     setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
     console.log(userCoords);
   });
-}, [myJourney])
+}, [])
 
 
   //TEST FOR REVERSE GEOLOCATION
@@ -113,7 +112,6 @@ fetch(geoUrl)
   });
 }, [])
 
-console.log(searchParam);
 
 // API CALL FOR DIRECTIONS
 const proxiedUrl3 = 'https://www.mapquestapi.com/directions/v2/route';
@@ -123,8 +121,8 @@ url3.search = new URLSearchParams({
   'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
   'params[unit]': 'k',
   'params[routeType]': 'fastest',
-  'params[from]': {userCoords},
-  'params[to]': {userInput},
+  'params[from]': `8405 avenue de l'epee`,
+  'params[to]': `1000 Rue Legendre O, Montréal, QC H4N`,
   'params[doReverseGeocode]': false,
   'params[enhancedNarrative]': false,
   'params[avoidTimedConditions]': false,
@@ -134,19 +132,19 @@ url3.search = new URLSearchParams({
 });
 
 useEffect( () => {
-fetch(url3)
-  .then(response => response.json())
-  .then( (data) => {
-    const directions = data.route.legs[0].maneuvers;
-    const directionsNarrative = directions.map( (value) => {
-      console.log(value.narrative);
-    })
-    })
+  fetch(url3)
+    .then(response => response.json())
+    .then( (data) => {
+      console.log(data.route.legs[0].maneuvers)
+      setMyJourney(data.route.legs[0].maneuvers)
+      // const directionsNarrative = directions.map( (value) => {
+      //   console.log(value.narrative);
+      // })
+      })
 }, [])
 
 
   return (
-    <Router>
       <div className="wrapper">
         <Header />
         <Input 
@@ -156,10 +154,9 @@ fetch(url3)
           userInput={userInput}
           takeMeThere={takeMeThere}
         />
-        <ListOfPlaces destination={destination} userCoords={userCoords}/>
-        <Route path="/directions" component={Directions}/>
+        <ListOfPlaces destination={destination} userCoords={userCoords} myJourney={myJourney}/>
       </div>
-    </Router>
+
   )
 }
 
