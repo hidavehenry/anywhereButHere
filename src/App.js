@@ -15,6 +15,8 @@ function App() {
   const [myJourney, setMyJourney] = useState([])
   const [destination, setDestination] = useState([]);
     
+  console.log(destination);
+
   const handleQChange = (event) => {
     setSearchParam(event.target.value);
   }
@@ -27,6 +29,13 @@ function App() {
     event.preventDefault();
     getDestination();
   }
+
+  const getDirections = () => {
+    // console.log(myJourney);
+    myJourney.map( (value) => {
+        console.log(value.narrative);
+      })
+}
 
     function getLocation(event) {
         event.preventDefault();
@@ -41,7 +50,6 @@ function App() {
         function showPosition(position) {
             setUserCoords([position.coords.longitude, position.coords.latitude]);
             setUserCoordsRadius([position.coords.longitude, position.coords.latitude, 5000]);
-            console.log(userCoordsRadius);
         }
 
 
@@ -62,10 +70,7 @@ const getDestination = () => {
 fetch(url)
   .then(response => response.json())
   .then(data => {
-    // console.log(data.results[0].displayString);
       setDestination(data.results)
-      
-      // place.place.geometry.coordinates
       })
 }
 
@@ -86,7 +91,7 @@ useEffect( () => {
 fetch(url4)
   .then(response => response.json())
   .then(data => {
-    console.log(data.results[0].locations[0].latLng);
+    // console.log(data.results[0].locations[0].latLng);
     setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
     console.log(userCoords);
   });
@@ -135,11 +140,8 @@ useEffect( () => {
   fetch(url3)
     .then(response => response.json())
     .then( (data) => {
-      console.log(data.route.legs[0].maneuvers)
       setMyJourney(data.route.legs[0].maneuvers)
-      // const directionsNarrative = directions.map( (value) => {
-      //   console.log(value.narrative);
-      // })
+
       })
 }, [])
 
@@ -154,7 +156,9 @@ useEffect( () => {
           userInput={userInput}
           takeMeThere={takeMeThere}
         />
-        <ListOfPlaces destination={destination} userCoords={userCoords} myJourney={myJourney}/>
+        <ListOfPlaces destination={destination} userCoords={userCoords} myJourney={myJourney} getDirections={getDirections}/>
+
+        {/* <Directions myJourney={myJourney}/> */}
       </div>
 
   )
