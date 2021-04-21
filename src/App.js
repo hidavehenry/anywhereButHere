@@ -1,8 +1,8 @@
 import './App.css';
 import Directions from './components/Directions';
 import Input from './components/Input';
-import Header from './Header';
 import ListOfPlaces from './components/ListOfPlaces'
+import Header from './Header';
 import { useEffect, useState } from 'react'
 
 function App() {
@@ -12,7 +12,6 @@ function App() {
   const [searchParam, setSearchParam] = useState('')
   const [userStreet, setUserStreet] = useState('')
   const [userInput, setUserInput] = useState('')
-  const [useLocation, setUseLocation] = useState(false)
   const [destination, setDestination] = useState([]);
     
   const handleQChange = (event) => {
@@ -25,12 +24,12 @@ function App() {
 
   const takeMeThere = (event) => {
     event.preventDefault();
-    getDestination();
+    addressToCoordinates();
   }
 
     function getLocation(event) {
         event.preventDefault();
-        setUseLocation(true);
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
         } else { 
@@ -38,8 +37,8 @@ function App() {
         }
         }
             function showPosition(position) {
-            setUserCoords([position.coords.longitude, position.coords.latitude]);
-            setUserCoordsRadius([position.coords.longitude, position.coords.latitude, 5000]);
+            setUserCoords([position.coords.longitude, position.coords.latitude])
+            console.log(userCoords);
         }
 
 // API CALL FOR GEOCODING THE USER'S ADDRESS
@@ -47,64 +46,61 @@ const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
 const url4 = new URL('https://proxy.hackeryou.com');
 url4.search = new URLSearchParams({
   reqUrl: proxiedUrl4,
-  'params[key]': 'dTlbawGG8FhZfTGC0sBQMIYLXx9s3Qtl',
+  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
   'proxyHeaders[Accept]': 'application/json',
-  'params[location]': {userInput}
+  'params[location]': userInput
 });
 
 const addressToCoordinates = () => {
 fetch(url4)
   .then(response => response.json())
   .then(data => {
-    console.log(data.results[0].locations[0].latLng);
     setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
-    console.log(userCoords);
   });
-}
+  
+};
+
+
+useEffect( () => {
+  if (userCoords !== []) {
+  setUserCoordsRadius([...userCoords, 5000])
+}}, [userCoords])
 
 //API CALL FOR Q IN USER RADIUS
 const proxiedUrl = 'https://www.mapquestapi.com/search/v4/place';
-const url = new URL('https://proxy.hackeryou.com');
-console.log(userCoordsRadius);
-url.search = new URLSearchParams({
-  reqUrl: proxiedUrl,
-  'params[location]': userCoords,
-  'params[sort]': 'distance',
-  'params[key]': 'dTlbawGG8FhZfTGC0sBQMIYLXx9s3Qtl',
-  'params[circle]': userCoordsRadius,
-  'params[q]': searchParam,
-  'proxyHeaders[Accept]': 'application/json',
+const urlQ = new URL('https://proxy.hackeryou.com');
+urlQ.search = new URLSearchParams({
+reqUrl: proxiedUrl,
+'params[location]': userCoords,
+'params[sort]': 'distance',
+'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+'params[circle]': userCoordsRadius,
+'params[q]': searchParam,
+'proxyHeaders[Accept]': 'application/json',
 });
 
-const getDestination = () => {
-if (useLocation === true) {
-fetch(url)
-  .then(response => response.json())
-  .then(data => {
-      setDestination(data.results)
-      
-      // place.place.geometry.coordinates
-      })
-      setUseLocation(false)
-    } else {
-      addressToCoordinates()
-      fetch(url)
-  .then(response => response.json())
-  .then(data => {
-      setDestination(data.results)
-      
-      // place.place.geometry.coordinates
-      })
-    }
-}
+useEffect(() => {
+if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
+  console.log(userCoordsRadius)
 
-  //TEST FOR REVERSE GEOLOCATION
+  fetch(urlQ)
+  .then(response => response.json())
+  .then(data => {
+      setDestination(data.results)
+      console.log(data)
+      
+      // place.place.geometry.coordinates
+      })
+}
+}, [userCoordsRadius]);
+
+// TEST FOR REVERSE GEOLOCATION
 const proxiedGeoUrl = 'http://www.mapquestapi.com/geocoding/v1/reverse';
  const geoUrl = new URL('https://proxy.hackeryou.com');
  geoUrl.search = new URLSearchParams({
   reqUrl: proxiedGeoUrl,
   'params[location]': [ -79.41756900858489, 43.64993671317276],
-  'params[key]': 'dTlbawGG8FhZfTGC0sBQMIYLXx9s3Qtl',
+  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
   'proxyHeaders[Accept]': 'application/json',
  });
 
@@ -117,8 +113,6 @@ fetch(geoUrl)
   //  console.log(userStreet)
   });
 }, [])
-
-console.log(searchParam);
 
   return (
 
