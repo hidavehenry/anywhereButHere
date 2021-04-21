@@ -31,7 +31,6 @@ function App() {
   }
 
   const getDirections = () => {
-    // console.log(myJourney);
     myJourney.map( (value) => {
         console.log(value.narrative);
       })
