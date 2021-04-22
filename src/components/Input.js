@@ -27,9 +27,9 @@ const Input = ( props ) => {
             </div>
             <div className="userSearch">
                 <form>
-                <label htmlFor="destination" className="sr-only">Where do you want to go?</label>
+                <label htmlFor="userDestination" className="sr-only">Where do you want to go?</label>
                     <input 
-                        id="destination" 
+                        id="userDestination" 
                         type="text" 
                         placeholder="Where do you want to go?" 
                         onChange={props.handleQChange} 
