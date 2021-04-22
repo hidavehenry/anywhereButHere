@@ -5,6 +5,7 @@ import ListOfPlaces from './components/ListOfPlaces'
 import { useEffect, useState } from 'react'
 import Directions from './components/Directions';
 
+
 function App() {
 
   const [userCoords, setUserCoords] = useState([])
@@ -14,9 +15,8 @@ function App() {
   const [userInput, setUserInput] = useState('')
   const [myJourney, setMyJourney] = useState([])
   const [destination, setDestination] = useState([]);
-    
-  console.log(destination);
-
+  const [destinationSpot, setDestinationSpot] = useState([])
+  
   const handleQChange = (event) => {
     setSearchParam(event.target.value);
   }
@@ -30,11 +30,53 @@ function App() {
     getDestination();
   }
 
-  const getDirections = () => {
-    myJourney.map( (value) => {
-        console.log(value.narrative);
-      })
-}
+  // function for clicking and retrieving destination coordinates
+  const getDirections = (event, individualId) => {
+    event.preventDefault();
+    console.log('hello again');
+    const copyOfDestination = [...destination];
+    const finalDestination = copyOfDestination.filter( (singleDestination) => {
+      return singleDestination.id === individualId;
+    })
+    console.log(finalDestination);
+    setDestinationSpot(finalDestination[0].place.properties.street);
+  }
+
+  useEffect( () => {
+    console.log(destinationSpot);
+    if (destinationSpot.length > 0 && userCoords.length > 0) {
+      directionsApiCall();
+    }
+  }, [destinationSpot, userCoords])
+
+
+// API CALL FOR DIRECTIONS
+const directionsApiCall = () => {
+  const proxiedUrl3 = 'https://www.mapquestapi.com/directions/v2/route';
+  const url3 = new URL('https://proxy.hackeryou.com');
+  url3.search = new URLSearchParams({
+    reqUrl: proxiedUrl3,
+    'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
+    'params[unit]': 'k',
+    'params[routeType]': 'fastest',
+    'params[from]': `6480 avenue querbes`,
+    'params[to]': destinationSpot,
+    'params[doReverseGeocode]': false,
+    'params[enhancedNarrative]': false,
+    'params[avoidTimedConditions]': false,
+    'params[narrativeType]': 'text',
+    'proxyHeaders[Accept]': 'application/json',
+    'params[outFormat]': 'JSON',
+  });
+
+  
+    fetch(url3)
+      .then(response => response.json())
+      .then( (data) => {
+        console.log(data);
+        setMyJourney(data.route.legs[0].maneuvers)
+        })
+  }
 
     function getLocation(event) {
         event.preventDefault();
@@ -59,7 +101,7 @@ url.search = new URLSearchParams({
   reqUrl: proxiedUrl,
   'params[location]': userCoords,
   'params[sort]': 'distance',
-  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+  'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
   'params[circle]': userCoordsRadius,
   'params[q]': searchParam,
   'proxyHeaders[Accept]': 'application/json',
@@ -74,14 +116,12 @@ fetch(url)
 }
 
 
-
-
 // API CALL FOR GEOCODING THE USER'S ADDRESS
 const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
 const url4 = new URL('https://proxy.hackeryou.com');
 url4.search = new URLSearchParams({
   reqUrl: proxiedUrl4,
-  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+  'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
   'proxyHeaders[Accept]': 'application/json',
   'params[location]': {userInput}
 });
@@ -90,9 +130,7 @@ useEffect( () => {
 fetch(url4)
   .then(response => response.json())
   .then(data => {
-    // console.log(data.results[0].locations[0].latLng);
     setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
-    console.log(userCoords);
   });
 }, [])
 
@@ -103,7 +141,7 @@ const proxiedGeoUrl = 'http://www.mapquestapi.com/geocoding/v1/reverse';
  geoUrl.search = new URLSearchParams({
   reqUrl: proxiedGeoUrl,
   'params[location]': [ -79.41756900858489, 43.64993671317276],
-  'params[key]': 'WWEYdye9aFyaPW4k4kRFXHMfKiFe4bHT',
+  'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
   'proxyHeaders[Accept]': 'application/json',
  });
 
@@ -112,36 +150,7 @@ fetch(geoUrl)
   .then(response => response.json())
   .then(geodata => {
    setUserStreet(geodata.results[0].locations[0].street)
-   console.log(geodata.results[0].locations[0].street)
   });
-}, [])
-
-
-// API CALL FOR DIRECTIONS
-const proxiedUrl3 = 'https://www.mapquestapi.com/directions/v2/route';
-const url3 = new URL('https://proxy.hackeryou.com');
-url3.search = new URLSearchParams({
-  reqUrl: proxiedUrl3,
-  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
-  'params[unit]': 'k',
-  'params[routeType]': 'fastest',
-  'params[from]': `8405 avenue de l'epee`,
-  'params[to]': `1000 Rue Legendre O, Montréal, QC H4N`,
-  'params[doReverseGeocode]': false,
-  'params[enhancedNarrative]': false,
-  'params[avoidTimedConditions]': false,
-  'params[narrativeType]': 'text',
-  'proxyHeaders[Accept]': 'application/json',
-  'params[outFormat]': 'JSON',
-});
-
-useEffect( () => {
-  fetch(url3)
-    .then(response => response.json())
-    .then( (data) => {
-      setMyJourney(data.route.legs[0].maneuvers)
-
-      })
 }, [])
 
 
@@ -155,9 +164,14 @@ useEffect( () => {
           userInput={userInput}
           takeMeThere={takeMeThere}
         />
-        <ListOfPlaces destination={destination} userCoords={userCoords} myJourney={myJourney} getDirections={getDirections}/>
-
-        {/* <Directions myJourney={myJourney}/> */}
+        {destination.map( (place) => {
+          return(
+            <ListOfPlaces 
+            place={place}
+            getDirections={getDirections}/>
+            )
+        })}
+       <Directions myJourney={myJourney}/>
       </div>
 
   )
