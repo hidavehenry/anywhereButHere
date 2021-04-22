@@ -11,11 +11,10 @@ const Input = ( props ) => {
                         htmlFor="userAddress"
                         className="sr-only">Type your address
                     </label>
-
                     <input 
                         id="userAddress" 
                         type="text" 
-                        placeholder="type your address" 
+                        placeholder="Type your address"
                         value={props.userInput}
                         onChange={props.handleFrom}
                     />

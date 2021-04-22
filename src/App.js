@@ -1,9 +1,11 @@
 import './App.css';
 import Input from './components/Input';
 import Header from './Header';
-import ListOfPlaces from './components/ListOfPlaces'
-import { useEffect, useState } from 'react'
+import ListOfPlaces from './components/ListOfPlaces';
+import Map from './components/Map';
 import Directions from './components/Directions';
+import { useEffect, useState } from 'react'; 
+
 
 
 function App() {
@@ -11,9 +13,10 @@ function App() {
   const [userCoords, setUserCoords] = useState([])
   const [userCoordsRadius, setUserCoordsRadius] = useState([])
   const [searchParam, setSearchParam] = useState('')
-  const [userStreet, setUserStreet] = useState('')
   const [userInput, setUserInput] = useState('')
   const [myJourney, setMyJourney] = useState([])
+  const [toAddress, setToAddress] = useState(false)
+
   const [destination, setDestination] = useState([]);
   const [destinationSpot, setDestinationSpot] = useState([]);
   const [showMeTheDirections, setShowMeTheDirections] = useState(true)
@@ -28,6 +31,7 @@ function App() {
 
   const takeMeThere = (event) => {
     event.preventDefault();
+    addressToCoordinates();
     getDestination();
   }
 
@@ -57,7 +61,7 @@ const directionsApiCall = () => {
     'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
     'params[unit]': 'k',
     'params[routeType]': 'fastest',
-    'params[from]': `6480 avenue querbes`,
+    'params[from]': userInput,
     'params[to]': destinationSpot,
     'params[doReverseGeocode]': false,
     'params[enhancedNarrative]': false,
@@ -112,6 +116,20 @@ fetch(url)
       })
 }
 
+  function getLocation(event) {
+    event.preventDefault();
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+      alert('No Locations Found. Please Try Again!')
+    }
+    }
+
+    // THE USER COORDS ARE REVERSED! NEED TO FIX IT!
+    function showPosition(position) {
+      setUserInput([position.coords.latitude, position.coords.longitude]);
+      setToAddress(true)
+    }
 
 // API CALL FOR GEOCODING THE USER'S ADDRESS
 const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
@@ -120,17 +138,16 @@ url4.search = new URLSearchParams({
   reqUrl: proxiedUrl4,
   'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
   'proxyHeaders[Accept]': 'application/json',
-  'params[location]': {userInput}
+  'params[location]': userInput
 });
 
-useEffect( () => {
+const addressToCoordinates = () => {
 fetch(url4)
   .then(response => response.json())
   .then(data => {
     setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
   });
-}, [])
-
+};
 
   //TEST FOR REVERSE GEOLOCATION
 const proxiedGeoUrl = 'http://www.mapquestapi.com/geocoding/v1/reverse';
@@ -149,6 +166,59 @@ fetch(geoUrl)
    setUserStreet(geodata.results[0].locations[0].street)
   });
 }, [])
+
+useEffect( () => {
+  if (userCoords !== []) {
+  setUserCoordsRadius([...userCoords, 5000])
+}}, [userCoords])
+
+
+//API CALL FOR Q IN USER RADIUS
+const proxiedUrl = 'https://www.mapquestapi.com/search/v4/place';
+const urlQ = new URL('https://proxy.hackeryou.com');
+urlQ.search = new URLSearchParams({
+reqUrl: proxiedUrl,
+'params[location]': userCoords,
+'params[sort]': 'distance',
+'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+'params[circle]': userCoordsRadius,
+'params[q]': searchParam,
+'proxyHeaders[Accept]': 'application/json',
+});
+
+useEffect(() => {
+if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
+  console.log(userCoordsRadius)
+  fetch(urlQ)
+  .then(response => response.json())
+  .then(data => {
+      setDestination(data.results)
+      })
+}
+}, [userCoordsRadius]);
+
+
+
+LOCATION TO RETURN STREET ADDRESS
+  useEffect( () => {
+    if (toAddress === true) {
+      const proxiedGeoUrl = 'http://www.mapquestapi.com/geocoding/v1/reverse';
+      const geoUrl = new URL('https://proxy.hackeryou.com');
+      geoUrl.search = new URLSearchParams({
+        reqUrl: proxiedGeoUrl,
+        'params[location]': userInput,
+        'params[key]': 'AhbgCPRoF1OzG1YBICuTKhcx25nl5X5M',
+        'proxyHeaders[Accept]': 'application/json',
+      });
+
+        fetch(geoUrl)
+          .then(response => response.json())
+          .then(geodata => {
+            // console.log(geodata)
+            setUserInput((geodata.results[0].locations[0].street) + ` ` + (geodata.results[0].locations[0].adminArea4) + ` ` + (geodata.results[0].locations[0].adminArea3))
+          });
+    }
+}, [toAddress])
 
 
   return (
@@ -179,9 +249,13 @@ fetch(geoUrl)
             destination={destination}
             /> 
           }
-      </div>
 
-  )
+        <ListOfPlaces destination={destination} userCoords={userCoords} myJourney={myJourney}/>
+        <Map destination={destination}
+            />
+
+      </div>
+  );
 }
 
 export default App;

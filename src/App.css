@@ -114,6 +114,9 @@ input:focus {
   border: 1px solid black;
 }
 
+
+/* MAP SECTION */
+
 ul {
   width: 45%;
   padding-left: 0;
@@ -137,6 +140,8 @@ li:active {
   background-color: yellow;
 }
 
-
-
+.mapid { 
+  width: 100%;
+  height: 50vh; 
+}
 
