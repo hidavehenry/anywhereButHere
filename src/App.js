@@ -14,6 +14,7 @@ function App() {
   const [searchParam, setSearchParam] = useState('')
   const [userInput, setUserInput] = useState('')
   const [myJourney, setMyJourney] = useState([])
+  const [toAddress, setToAddress] = useState(false)
 
   const [destination, setDestination] = useState([]);
     
@@ -28,30 +29,31 @@ function App() {
   const takeMeThere = (event) => {
     event.preventDefault();
     addressToCoordinates();
+      console.log(userCoords)
+      console.log(userCoordsRadius)
+
   }
 
-    function getLocation(event) {
+  function getLocation(event) {
+    event.preventDefault();
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+      console.log(navigator.geolocation)
+    } else { 
+      alert('No Locations Found. Please Try Again!')
+    }
+    // console.log(showPosition)
+    }
 
-      event.preventDefault();
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-        // getStreetAddress()
-      } else { 
-        console.log('no location')
-      }
-      // console.log(showPosition)
-      }
-  
-      // THE USER COORDS ARE REVERSED! NEED TO FIX IT!
-      function showPosition(position) {
-        setUserCoords([position.coords.latitude, position.coords.longitude]);
-        setUserCoordsRadius([position.coords.longitude, position.coords.latitude, 5000]);
-      }
-      // console.log(userCoords)
-      // console.log(userCoordsRadius)
+    // THE USER COORDS ARE REVERSED! NEED TO FIX IT!
+    function showPosition(position) {
+      setUserInput([position.coords.latitude, position.coords.longitude]);
+      setToAddress(true)
+    }
+
 
   const getDestination = () => {
-  fetch(url)
+  fetch(urlQ)
     .then(response => response.json())
     .then(data => {
       // console.log(data.results[0].displayString);
@@ -79,7 +81,7 @@ fetch(url4)
   });
 
   
-// };
+};
 
 
 useEffect( () => {
@@ -102,6 +104,7 @@ reqUrl: proxiedUrl,
 
 useEffect(() => {
 if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
+  console.log(userCoordsRadius)
   fetch(urlQ)
   .then(response => response.json())
   .then(data => {
@@ -112,16 +115,15 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
 
   // REVERSE GEOLOCATION TO RETURN STREET ADDRESS
   useEffect( () => {
-    if (userCoords.length>0) {
+    if (toAddress === true) {
       const proxiedGeoUrl = 'http://www.mapquestapi.com/geocoding/v1/reverse';
       const geoUrl = new URL('https://proxy.hackeryou.com');
       geoUrl.search = new URLSearchParams({
         reqUrl: proxiedGeoUrl,
-        'params[location]': userCoords,
+        'params[location]': userInput,
         'params[key]': 'AhbgCPRoF1OzG1YBICuTKhcx25nl5X5M',
         'proxyHeaders[Accept]': 'application/json',
       });
-
 
         fetch(geoUrl)
           .then(response => response.json())
@@ -130,7 +132,7 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
             setUserInput((geodata.results[0].locations[0].street) + ` ` + (geodata.results[0].locations[0].adminArea4) + ` ` + (geodata.results[0].locations[0].adminArea3))
           });
     }
-}, [userCoords])
+}, [toAddress])
 
 // API CALL FOR DIRECTIONS
 const proxiedUrl3 = 'https://www.mapquestapi.com/directions/v2/route';
@@ -162,7 +164,8 @@ url3.search = new URLSearchParams({
         />
         <ListOfPlaces destination={destination} userCoords={userCoords} myJourney={myJourney}/>
         {/* <Directions from={userCoords}/> */}
-        <Map destination={destination}/>
+        <Map destination={destination}
+            />
       </div>
   );
 }
