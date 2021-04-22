@@ -29,14 +29,14 @@ const Map = (props) => {
         />
         ))} */}
 
-        {props.destination.map( (place) => {
+        {/* {props.destination.map( (place) => {
             return(
               <Marker 
                 key={place.id} 
                 position={place.geometry.coordinates}
                 />
             )
-        } )}
+        } )} */}
 
 
         <Marker position={[43.64, -79.417]}>
