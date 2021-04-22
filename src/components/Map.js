@@ -16,7 +16,7 @@ const Map = (props) => {
 
 
   return (
-    <div>
+    <div className="mapClass">
       <MapContainer className="mapid" center={[43.64, -79.417]} zoom={15} scrollWheelZoom={false}>
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
