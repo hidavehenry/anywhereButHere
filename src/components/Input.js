@@ -4,6 +4,7 @@ const Input = ( props ) => {
 
     return (
         <div className="sectionWrapper">
+            <h2>Start your journey!</h2>
             <div className="userLocation">
                 <form>
                     <label 
