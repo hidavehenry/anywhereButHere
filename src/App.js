@@ -88,8 +88,6 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
   .then(data => {
       setDestination(data.results)
       console.log(data)
-      
-      // place.place.geometry.coordinates
       })
 }
 }, [userCoordsRadius]);
