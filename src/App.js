@@ -16,7 +16,6 @@ function App() {
   const [userInput, setUserInput] = useState('')
   const [myJourney, setMyJourney] = useState([])
   const [toAddress, setToAddress] = useState(false)
-
   const [destination, setDestination] = useState([]);
   const [destinationSpot, setDestinationSpot] = useState([]);
   const [showMeTheDirections, setShowMeTheDirections] = useState(true)
@@ -32,7 +31,6 @@ function App() {
   const takeMeThere = (event) => {
     event.preventDefault();
     addressToCoordinates();
-    getDestination();
   }
 
   // function for clicking and retrieving destination coordinates
@@ -94,28 +92,6 @@ const directionsApiCall = () => {
             setUserCoordsRadius([position.coords.longitude, position.coords.latitude, 5000]);
         }
 
-
-//API CALL FOR Q IN USER RADIUS
-const proxiedUrl = 'https://www.mapquestapi.com/search/v4/place';
-const url = new URL('https://proxy.hackeryou.com');
-url.search = new URLSearchParams({
-  reqUrl: proxiedUrl,
-  'params[location]': userCoords,
-  'params[sort]': 'distance',
-  'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
-  'params[circle]': userCoordsRadius,
-  'params[q]': searchParam,
-  'proxyHeaders[Accept]': 'application/json',
-});
-
-const getDestination = () => {
-fetch(url)
-  .then(response => response.json())
-  .then(data => {
-      setDestination(data.results)
-      })
-}
-
   function getLocation(event) {
     event.preventDefault();
     if (navigator.geolocation) {
@@ -149,24 +125,6 @@ fetch(url4)
   });
 };
 
-  //TEST FOR REVERSE GEOLOCATION
-const proxiedGeoUrl = 'http://www.mapquestapi.com/geocoding/v1/reverse';
- const geoUrl = new URL('https://proxy.hackeryou.com');
- geoUrl.search = new URLSearchParams({
-  reqUrl: proxiedGeoUrl,
-  'params[location]': [ -79.41756900858489, 43.64993671317276],
-  'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
-  'proxyHeaders[Accept]': 'application/json',
- });
-
-useEffect( ()=> {
-fetch(geoUrl)
-  .then(response => response.json())
-  .then(geodata => {
-   setUserStreet(geodata.results[0].locations[0].street)
-  });
-}, [])
-
 useEffect( () => {
   if (userCoords !== []) {
   setUserCoordsRadius([...userCoords, 5000])
@@ -174,10 +132,10 @@ useEffect( () => {
 
 
 //API CALL FOR Q IN USER RADIUS
-const proxiedUrl = 'https://www.mapquestapi.com/search/v4/place';
+const proxiedUrlQ = 'https://www.mapquestapi.com/search/v4/place';
 const urlQ = new URL('https://proxy.hackeryou.com');
 urlQ.search = new URLSearchParams({
-reqUrl: proxiedUrl,
+reqUrl: proxiedUrlQ,
 'params[location]': userCoords,
 'params[sort]': 'distance',
 'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
@@ -188,7 +146,6 @@ reqUrl: proxiedUrl,
 
 useEffect(() => {
 if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
-  console.log(userCoordsRadius)
   fetch(urlQ)
   .then(response => response.json())
   .then(data => {
@@ -198,8 +155,7 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
 }, [userCoordsRadius]);
 
 
-
-LOCATION TO RETURN STREET ADDRESS
+// LOCATION TO RETURN STREET ADDRESS
   useEffect( () => {
     if (toAddress === true) {
       const proxiedGeoUrl = 'http://www.mapquestapi.com/geocoding/v1/reverse';
@@ -214,7 +170,6 @@ LOCATION TO RETURN STREET ADDRESS
         fetch(geoUrl)
           .then(response => response.json())
           .then(geodata => {
-            // console.log(geodata)
             setUserInput((geodata.results[0].locations[0].street) + ` ` + (geodata.results[0].locations[0].adminArea4) + ` ` + (geodata.results[0].locations[0].adminArea3))
           });
     }
@@ -246,12 +201,12 @@ LOCATION TO RETURN STREET ADDRESS
             <Directions 
             myJourney={myJourney}
             setShowMeTheDirections={setShowMeTheDirections}
-            destination={destination}
             /> 
           }
 
-        <ListOfPlaces destination={destination} userCoords={userCoords} myJourney={myJourney}/>
-        <Map destination={destination}
+        <Map 
+        userInput={userInput}
+        destination={destination}
             />
 
       </div>
