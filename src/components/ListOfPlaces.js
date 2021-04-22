@@ -4,7 +4,9 @@ const ListOfPlaces = (props) => {
         <div>
             <ul>
                 <li 
-                    onClick={ (event) => {props.getDirections(event, props.place.id);} } 
+                    onClick={ (event) => {props.getDirections(event, props.place.id)
+                    props.setShowMeTheDirections(false)
+                    } } 
                     key={props.place.id}
                 >
                     {props.place.displayString}

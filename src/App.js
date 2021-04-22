@@ -15,7 +15,8 @@ function App() {
   const [userInput, setUserInput] = useState('')
   const [myJourney, setMyJourney] = useState([])
   const [destination, setDestination] = useState([]);
-  const [destinationSpot, setDestinationSpot] = useState([])
+  const [destinationSpot, setDestinationSpot] = useState([]);
+  const [showMeTheDirections, setShowMeTheDirections] = useState(true)
   
   const handleQChange = (event) => {
     setSearchParam(event.target.value);
@@ -33,17 +34,14 @@ function App() {
   // function for clicking and retrieving destination coordinates
   const getDirections = (event, individualId) => {
     event.preventDefault();
-    console.log('hello again');
     const copyOfDestination = [...destination];
     const finalDestination = copyOfDestination.filter( (singleDestination) => {
       return singleDestination.id === individualId;
     })
-    console.log(finalDestination);
     setDestinationSpot(finalDestination[0].place.properties.street);
   }
 
   useEffect( () => {
-    console.log(destinationSpot);
     if (destinationSpot.length > 0 && userCoords.length > 0) {
       directionsApiCall();
     }
@@ -73,7 +71,6 @@ const directionsApiCall = () => {
     fetch(url3)
       .then(response => response.json())
       .then( (data) => {
-        console.log(data);
         setMyJourney(data.route.legs[0].maneuvers)
         })
   }
@@ -164,14 +161,24 @@ fetch(geoUrl)
           userInput={userInput}
           takeMeThere={takeMeThere}
         />
-        {destination.map( (place) => {
-          return(
-            <ListOfPlaces 
-            place={place}
-            getDirections={getDirections}/>
-            )
-        })}
-       <Directions myJourney={myJourney}/>
+          { showMeTheDirections
+            ?
+            destination.map( (place) => {
+              return(
+                <ListOfPlaces 
+                place={place}
+                getDirections={getDirections}
+                setShowMeTheDirections={setShowMeTheDirections}
+                />
+              )
+            })
+            : 
+            <Directions 
+            myJourney={myJourney}
+            setShowMeTheDirections={setShowMeTheDirections}
+            destination={destination}
+            /> 
+          }
       </div>
 
   )
