@@ -54,7 +54,7 @@ function App() {
       const url3 = new URL('https://proxy.hackeryou.com');
       url3.search = new URLSearchParams({
         reqUrl: proxiedUrl3,
-        'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
+        'params[key]': 'UMOoQUxVkFrNHwr75UStAvqWaXeSdfVa',
         'params[unit]': 'k',
         'params[routeType]': 'fastest',
         'params[from]': userInput,
@@ -96,7 +96,7 @@ const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
 const url4 = new URL('https://proxy.hackeryou.com');
 url4.search = new URLSearchParams({
   reqUrl: proxiedUrl4,
-  'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
+  'params[key]': 'WP3CQxjpfsnoNqYgZsJUivfTxdlddi5I',
   'proxyHeaders[Accept]': 'application/json',
   'params[location]': userInput
 });
@@ -127,7 +127,7 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
   reqUrl: proxiedUrlQ,
   'params[location]': userCoords,
   'params[sort]': 'distance',
-  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+  'params[key]': 'eIPRdlWTSoJlopmCKZWuhal87N7MniGL',
   'params[circle]': userCoordsRadius,
   'params[q]': searchParam,
   'proxyHeaders[Accept]': 'application/json',
@@ -150,7 +150,7 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
       geoUrl.search = new URLSearchParams({
         reqUrl: proxiedGeoUrl,
         'params[location]': userInput,
-        'params[key]': 'AhbgCPRoF1OzG1YBICuTKhcx25nl5X5M',
+        'params[key]': '9FRurGtzGGmE8ZdsARA7Jz56yrbBuMzP',
         'proxyHeaders[Accept]': 'application/json',
       });
         fetch(geoUrl)
@@ -195,7 +195,7 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
                 ?
                 (
                   <div className="loserClass">
-                  <p>Sorry, loser, you're going nowhere.</p>
+                  <p>Sorry, you're going nowhere.</p>
                   <p>Try another search.</p>
                   </div>
                 )
