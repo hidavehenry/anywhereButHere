@@ -2,7 +2,7 @@
 const Directions = (props) => {
     return (
         <div className="directionsClass">
-          <h2>Take me there!</h2>
+          <h2>Get me out of here!</h2>
             {props.myJourney.map( (value) => {
               console.log(value);
                 return(

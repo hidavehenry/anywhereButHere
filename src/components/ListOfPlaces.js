@@ -1,6 +1,4 @@
 const ListOfPlaces = (props) => {
-    console.log(props.place);
-
     return(
                 <li 
                     onClick={ (event) => {props.getDirections(event, props.place.id)

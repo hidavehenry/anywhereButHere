@@ -219,15 +219,26 @@ footer a {
   .heading p {
     font-size: 1rem;
   }
+  .wrapper {
+    width: 90%;
+  }
 }
 
-@media (max-width: 725) {
-  li,
-  p {
-    font-size: .8rem;
-  }
+@media (max-width: 725px) {
 
-  .mapClass {
+  .flexApp {
+    flex-direction: column-reverse;
+  }
+  .mapClass,
+  .mapId {
     width: 100%;
+    margin-left: 0;
+  }
+  .listOfPlaces {
+    width: 100%;
+  }
+  .directionsClass {
+    width: 100%;
+    margin-top: 40px;
   }
 }
