@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,800;1,400;1,600&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600,800;1,400&display=swap');
+
 
 html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace,monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace,monospace;font-size:1em}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,html [type=button],[type=reset],[type=submit]{-webkit-appearance:button}button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring{outline:1px dotted ButtonText}fieldset{padding:.35em .75em .625em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-cancel-button,[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item}canvas{display:inline-block}template{display:none}[hidden]{display:none}
 
@@ -26,7 +28,10 @@ input {
   max-width: 1400px;
   width: 80%;
   background-color: white;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
 }
 
 .sectionWrapper {
@@ -39,12 +44,15 @@ input {
   justify-content: center;
 }
 
+<<<<<<< HEAD
+=======
 .flexApp {
   display: flex;
   width: 100%;
   align-items: space-between;
   margin: 60px auto;
 }
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
 
 /* Header Section */
 button,
@@ -53,11 +61,14 @@ h1 {
   font-weight: 800;
 }
 
+<<<<<<< HEAD
+=======
 p {
   font-size: .9rem;
   line-height: 1.5;
 }
 
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
 h1 {
   font-size: 3rem;
   text-align: center;
@@ -69,6 +80,13 @@ h2 {
 }
 
 .heading p {
+<<<<<<< HEAD
+  line-height: 1.3;
+  margin-bottom: 40px;
+}
+
+
+=======
   margin-bottom: 60px;
   text-align: center;
   font-size: 1.2rem;
@@ -77,6 +95,7 @@ h2 {
 
 /* Form Styles */
 
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
 button,
 input {
   text-transform: uppercase;
@@ -137,22 +156,35 @@ input:focus {
 }
 
 ul {
+<<<<<<< HEAD
+  width: 45%;
+=======
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
   padding-left: 0;
 }
 
 li {
   list-style-type: none;
+<<<<<<< HEAD
+  display: inline-block;
+  padding: 5px 10px;
+  line-height: 1.5;
+  font-weight: 600;
+=======
   display: block;
   padding: 5px 10px;
   line-height: 1.5;
   font-weight: 800;
   font-size: .9rem;
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
 }
 
 li:hover,
 li:focus {
   cursor: pointer;
   color: grey;
+<<<<<<< HEAD
+=======
 }
 
 li:active {
@@ -172,14 +204,23 @@ li:active {
 .mapClass,
 .mapid {
   height: 70vh;
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
 }
 
+li:active {
+  background-color: yellow;
+}
+
+/* Map Styles */
 .mapid { 
   width: 100%;
 }
 
 .mapClass {
   border: 1px solid black;
+<<<<<<< HEAD
+  width: 50%;
+=======
   width: 70%;
   margin-left: 40px;
 }
@@ -230,4 +271,5 @@ footer a {
   .mapClass {
     width: 100%;
   }
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
 }

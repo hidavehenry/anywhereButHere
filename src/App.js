@@ -7,9 +7,11 @@ import Directions from './components/Directions';
 import { useEffect, useState } from 'react'; 
 import Footer from './components/Footer';
 
+
 function App() {
 
   const [userCoords, setUserCoords] = useState([])
+  const [userCoordsR, setUserCoordsR] = useState([43.651, -79.418])
   const [userCoordsRadius, setUserCoordsRadius] = useState([])
   const [searchParam, setSearchParam] = useState('')
   const [userInput, setUserInput] = useState('')
@@ -18,6 +20,10 @@ function App() {
   const [destination, setDestination] = useState([]);
   const [destinationSpot, setDestinationSpot] = useState([]);
   const [showMeTheDirections, setShowMeTheDirections] = useState(true)
+<<<<<<< HEAD
+
+=======
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
   const [showMeTheMap, setMeTheShowMap] = useState(false)
   
   const handleQChange = (event) => {
@@ -32,6 +38,20 @@ function App() {
     event.preventDefault();
     addressToCoordinates();
     setMeTheShowMap(true);
+<<<<<<< HEAD
+  }
+
+  // function for clicking and retrieving destination coordinates
+  const getDirections = (event, individualId) => {
+    event.preventDefault();
+    const copyOfDestination = [...destination];
+    const finalDestination = copyOfDestination.filter( (singleDestination) => {
+      return singleDestination.id === individualId;
+    })
+    setDestinationSpot(finalDestination[0].place.properties.street);
+  }
+
+=======
   }
 
   // function for clicking and retrieving destination coordinates
@@ -45,6 +65,7 @@ function App() {
   }
 
 
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
 // API CALL FOR DIRECTIONS
   useEffect( () => {
     if (destinationSpot.length > 0 && userCoords.length > 0) {  
@@ -72,8 +93,12 @@ function App() {
     }
   }, [destinationSpot, userCoords, userInput])
 
+<<<<<<< HEAD
+  
+=======
     
 
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
   function getLocation(event) {
     event.preventDefault();
     if (navigator.geolocation) {
@@ -88,6 +113,60 @@ function App() {
       setUserInput([position.coords.latitude, position.coords.longitude]);
       setToAddress(true)
     }
+<<<<<<< HEAD
+
+  // API CALL FOR GEOCODING THE USER'S ADDRESS
+  const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
+  const url4 = new URL('https://proxy.hackeryou.com');
+  url4.search = new URLSearchParams({
+    reqUrl: proxiedUrl4,
+    'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
+    'proxyHeaders[Accept]': 'application/json',
+    'params[location]': userInput
+  });
+
+  const addressToCoordinates = () => {
+  fetch(url4)
+    .then(response => response.json())
+    .then(data => {
+      setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
+      setUserCoordsR([data.results[0].locations[0].latLng.lat, data.results[0].locations[0].latLng.lng]);
+    });
+  };
+
+  useEffect( () => {
+    if (userCoords !== []) {
+    setUserCoordsRadius([...userCoords, 5000])
+  }}, [userCoords])
+
+
+  //API CALL FOR Q IN USER RADIUS
+
+  useEffect(() => {
+    
+  if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
+    const proxiedUrlQ = 'https://www.mapquestapi.com/search/v4/place';
+    const urlQ = new URL('https://proxy.hackeryou.com');
+    urlQ.search = new URLSearchParams({
+    reqUrl: proxiedUrlQ,
+    'params[location]': userCoords,
+    'params[sort]': 'distance',
+    'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
+    'params[circle]': userCoordsRadius,
+    'params[q]': searchParam,
+    'proxyHeaders[Accept]': 'application/json',
+    });
+    fetch(urlQ)
+    .then(response => response.json())
+    .then(data => {
+        setDestination(data.results)
+        })
+  }
+  }, [userCoordsRadius, userCoords, searchParam]);
+
+
+  // LOCATION TO RETURN STREET ADDRESS
+=======
 
 // API CALL FOR GEOCODING THE USER'S ADDRESS
 const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
@@ -139,6 +218,7 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
 
 
 // LOCATION TO RETURN STREET ADDRESS
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
   useEffect( () => {
     if (toAddress === true) {
       setToAddress(false);
@@ -150,6 +230,46 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
         'params[key]': 'AhbgCPRoF1OzG1YBICuTKhcx25nl5X5M',
         'proxyHeaders[Accept]': 'application/json',
       });
+<<<<<<< HEAD
+      fetch(geoUrl)
+        .then(response => response.json())
+        .then(geodata => {
+          setUserInput((geodata.results[0].locations[0].street) + ` ` + (geodata.results[0].locations[0].adminArea4) + ` ` + (geodata.results[0].locations[0].adminArea3))
+        });
+    }
+  }, [toAddress, userInput])
+
+
+  return (
+    <div className="wrapper appClass">
+      <Header />
+      <Input 
+        getLocation={getLocation} 
+        handleQChange={handleQChange}
+        handleFrom={handleFrom}
+        userInput={userInput}
+        takeMeThere={takeMeThere}
+      />
+      <div className="flexApp">
+        { showMeTheDirections
+          ?
+          destination.map( (place) => {
+            return(
+              <ListOfPlaces 
+              place={place}
+              getDirections={getDirections}
+              setShowMeTheDirections={setShowMeTheDirections}
+              />
+            )
+          })
+          : 
+          <Directions 
+          myJourney={myJourney}
+          setShowMeTheDirections={setShowMeTheDirections}
+          /> 
+        }
+                  {
+=======
         fetch(geoUrl)
           .then(response => response.json())
           .then(geodata => {
@@ -210,11 +330,26 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
           }
 
           {
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
             showMeTheMap  
             ?
             <Map 
             userInput={userInput}
             destination={destination}
+<<<<<<< HEAD
+            userCoordsR={userCoordsR}
+            />
+            : 
+            <div>:(</div>
+          }
+      </div>
+      
+      {/* <Map 
+      userInput={userInput}
+      destination={destination}
+          /> */}
+
+=======
             />
             : 
             <div className="emptyDiv"></div>
@@ -223,6 +358,7 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
 
       </div>
       <Footer />
+>>>>>>> 4598cc3a0671cfe80b85b8ab392e98a345d66bb6
     </div>
   );
 }
