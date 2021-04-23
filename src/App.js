@@ -7,9 +7,11 @@ import Directions from './components/Directions';
 import { useEffect, useState } from 'react'; 
 import Footer from './components/Footer';
 
+
 function App() {
 
   const [userCoords, setUserCoords] = useState([])
+  const [userCoordsR, setUserCoordsR] = useState([43.651, -79.418])
   const [userCoordsRadius, setUserCoordsRadius] = useState([])
   const [searchParam, setSearchParam] = useState('')
   const [userInput, setUserInput] = useState('')
@@ -215,6 +217,7 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
             <Map 
             userInput={userInput}
             destination={destination}
+            userCoordsR={userCoordsR}
             />
             : 
             <div className="emptyDiv"></div>
