@@ -4,7 +4,7 @@ const Input = ( props ) => {
 
     return (
         <div className="sectionWrapper">
-            <h2>Start your journey!</h2>
+            <h2>Get lost, or don't ... whatever, who cares</h2>
             <div className="userLocation">
                 <form>
                     <label 
@@ -14,7 +14,7 @@ const Input = ( props ) => {
                     <input 
                         id="userAddress" 
                         type="text" 
-                        placeholder="Type your address"
+                        placeholder="where are you starting?"
                         value={props.userInput}
                         onChange={props.handleFrom}
                     />
@@ -31,13 +31,13 @@ const Input = ( props ) => {
                     <input 
                         id="userDestination" 
                         type="text" 
-                        placeholder="Where do you want to go?" 
+                        placeholder="What do you want?" 
                         onChange={props.handleQChange} 
                     />
 
                     <button
                         onClick={props.takeMeThere}
-                    >Take me there!</button>
+                    >Take me there, I guess</button>
                 </form>
             </div>
         </div>
