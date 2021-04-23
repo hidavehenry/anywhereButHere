@@ -1,9 +1,10 @@
 
 const Directions = (props) => {
     return (
-        <div>
-          <h2>Take me there!</h2>
+        <div className="directionsClass">
+          <h2>Get me out of here!</h2>
             {props.myJourney.map( (value) => {
+              console.log(value);
                 return(
                   <div>
                     <p>{value.narrative}</p>

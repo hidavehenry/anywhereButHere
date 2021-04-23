@@ -5,12 +5,13 @@ import ListOfPlaces from './components/ListOfPlaces';
 import Map from './components/Map';
 import Directions from './components/Directions';
 import { useEffect, useState } from 'react'; 
-
+import Footer from './components/Footer';
 
 
 function App() {
 
   const [userCoords, setUserCoords] = useState([])
+  const [userCoordsR, setUserCoordsR] = useState([43.651, -79.418])
   const [userCoordsRadius, setUserCoordsRadius] = useState([])
   const [searchParam, setSearchParam] = useState('')
   const [userInput, setUserInput] = useState('')
@@ -19,6 +20,7 @@ function App() {
   const [destination, setDestination] = useState([]);
   const [destinationSpot, setDestinationSpot] = useState([]);
   const [showMeTheDirections, setShowMeTheDirections] = useState(true)
+  const [showMeTheMap, setMeTheShowMap] = useState(false)
   
   const handleQChange = (event) => {
     setSearchParam(event.target.value);
@@ -31,6 +33,7 @@ function App() {
   const takeMeThere = (event) => {
     event.preventDefault();
     addressToCoordinates();
+    setMeTheShowMap(true);
   }
 
   // function for clicking and retrieving destination coordinates
@@ -159,7 +162,8 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
 
 
   return (
-      <div className="wrapper appClass">
+    <div>
+      <div className="wrapper">
         <Header />
         <Input 
           getLocation={getLocation} 
@@ -171,28 +175,58 @@ if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
         <div className="flexApp">
           { showMeTheDirections
             ?
-            destination.map( (place) => {
-              return(
-                <ListOfPlaces 
-                place={place}
-                getDirections={getDirections}
-                setShowMeTheDirections={setShowMeTheDirections}
-                />
-              )
-            })
+            (
+            <div className="listOfPlaces">
+              <ul>
+              {
+                destination.length > 0
+                ?
+                destination.map( (place) => {
+                  return(
+                      <ListOfPlaces 
+                      place={place}
+                      getDirections={getDirections}
+                      setShowMeTheDirections={setShowMeTheDirections}
+                      />
+                  )})
+                : 
+                showMeTheMap === true
+                ?
+                (
+                  <div className="loserClass">
+                  <p>Sorry, loser, you're going nowhere.</p>
+                  <p>Try another search.</p>
+                  </div>
+                )
+                :
+                <div></div>
+                }
+                  </ul>
+                </div>
+                )
             : 
             <Directions 
             myJourney={myJourney}
             setShowMeTheDirections={setShowMeTheDirections}
             /> 
           }
-        </div>
-        <Map 
-        userInput={userInput}
-        destination={destination}
+
+          {
+            showMeTheMap  
+            ?
+            <Map 
+            userInput={userInput}
+            destination={destination}
+            userCoordsR={userCoordsR}
             />
+            : 
+            <div className="emptyDiv"></div>
+          }
+        </div>
 
       </div>
+      <Footer />
+    </div>
   );
 }
 
