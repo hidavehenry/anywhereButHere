@@ -1,32 +1,20 @@
-import Directions from "./Directions"
-
 const ListOfPlaces = (props) => {
-    
-    const myJourney = props.myJourney; 
-    const directionsClick = () => {
-        return(
-            <div>
-                <Directions myJourney={myJourney}/>
-            </div>
-        )
-    }
 
     return(
         <div>
             <ul>
-                {props.destination.map( (place) => {
-                    console.log(place)
-                    return(
-                            <li onClick={ directionsClick }>
-                                {place.displayString}
-                            </li>
-                    )
-                })
-                }
+                <li 
+                    onClick={ (event) => {props.getDirections(event, props.place.id)
+                    props.setShowMeTheDirections(false)
+                    } } 
+                    key={props.place.id}
+                >
+                    {props.place.displayString}
+                </li>
             </ul>
         </div>
     )
 }
 
 
-export default ListOfPlaces;
+export default ListOfPlaces; 

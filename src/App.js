@@ -7,15 +7,22 @@ import Directions from './components/Directions';
 import { useEffect, useState } from 'react'; 
 
 
+
 function App() {
 
   const [userCoords, setUserCoords] = useState([])
+  const [userCoordsR, setUserCoordsR] = useState([43.651, -79.418])
   const [userCoordsRadius, setUserCoordsRadius] = useState([])
   const [searchParam, setSearchParam] = useState('')
   const [userInput, setUserInput] = useState('')
   const [myJourney, setMyJourney] = useState([])
+  const [toAddress, setToAddress] = useState(false)
   const [destination, setDestination] = useState([]);
-    
+  const [destinationSpot, setDestinationSpot] = useState([]);
+  const [showMeTheDirections, setShowMeTheDirections] = useState(true)
+
+  const [showMeTheMap, setMeTheShowMap] = useState(false)
+  
   const handleQChange = (event) => {
     setSearchParam(event.target.value);
   }
@@ -26,127 +33,181 @@ function App() {
 
   const takeMeThere = (event) => {
     event.preventDefault();
-    getDestination();
+    addressToCoordinates();
+    setMeTheShowMap(true);
   }
 
-    function getLocation(event) {
-      event.preventDefault();
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-        // getStreetAddress()
-      } else { 
-        console.log('no location')
-      }
-      // console.log(showPosition)
-      }
+  // function for clicking and retrieving destination coordinates
+  const getDirections = (event, individualId) => {
+    event.preventDefault();
+    const copyOfDestination = [...destination];
+    const finalDestination = copyOfDestination.filter( (singleDestination) => {
+      return singleDestination.id === individualId;
+    })
+    setDestinationSpot(finalDestination[0].place.properties.street);
+  }
+
+// API CALL FOR DIRECTIONS
+  useEffect( () => {
+    if (destinationSpot.length > 0 && userCoords.length > 0) {  
+      const proxiedUrl3 = 'https://www.mapquestapi.com/directions/v2/route';
+      const url3 = new URL('https://proxy.hackeryou.com');
+      url3.search = new URLSearchParams({
+        reqUrl: proxiedUrl3,
+        'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
+        'params[unit]': 'k',
+        'params[routeType]': 'fastest',
+        'params[from]': userInput,
+        'params[to]': destinationSpot,
+        'params[doReverseGeocode]': false,
+        'params[enhancedNarrative]': false,
+        'params[avoidTimedConditions]': false,
+        'params[narrativeType]': 'text',
+        'proxyHeaders[Accept]': 'application/json',
+        'params[outFormat]': 'JSON',
+      });  
+        fetch(url3)
+          .then(response => response.json())
+          .then( (data) => {
+            setMyJourney(data.route.legs[0].maneuvers)
+            })
+    }
+  }, [destinationSpot, userCoords, userInput])
+
   
-      // THE USER COORDS ARE REVERSED! NEED TO FIX IT!
-      function showPosition(position) {
-        setUserCoords([position.coords.latitude, position.coords.longitude]);
-        setUserCoordsRadius([position.coords.longitude, position.coords.latitude, 5000]);
-      }
-      // console.log(userCoords)
-      // console.log(userCoordsRadius)
+  function getLocation(event) {
+    event.preventDefault();
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+      alert('No Locations Found. Please Try Again!')
+    }
+    }
+
+    // THE USER COORDS ARE REVERSED! NEED TO FIX IT!
+    function showPosition(position) {
+      setUserInput([position.coords.latitude, position.coords.longitude]);
+      setToAddress(true)
+    }
+
+  // API CALL FOR GEOCODING THE USER'S ADDRESS
+  const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
+  const url4 = new URL('https://proxy.hackeryou.com');
+  url4.search = new URLSearchParams({
+    reqUrl: proxiedUrl4,
+    'params[key]': 'VOCZhEgoahjsCUJmf4LYCnfOGZM527bT',
+    'proxyHeaders[Accept]': 'application/json',
+    'params[location]': userInput
+  });
+
+  const addressToCoordinates = () => {
+  fetch(url4)
+    .then(response => response.json())
+    .then(data => {
+      setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
+      setUserCoordsR([data.results[0].locations[0].latLng.lat, data.results[0].locations[0].latLng.lng]);
+    });
+  };
+
+  useEffect( () => {
+    if (userCoords !== []) {
+    setUserCoordsRadius([...userCoords, 5000])
+  }}, [userCoords])
+
 
   //API CALL FOR Q IN USER RADIUS
-  const proxiedUrl = 'https://www.mapquestapi.com/search/v4/place';
-  const url = new URL('https://proxy.hackeryou.com');
-  url.search = new URLSearchParams({
-    reqUrl: proxiedUrl,
+
+  useEffect(() => {
+    
+  if (userCoordsRadius.length !== 0 && userCoordsRadius.length !== 1) {
+    const proxiedUrlQ = 'https://www.mapquestapi.com/search/v4/place';
+    const urlQ = new URL('https://proxy.hackeryou.com');
+    urlQ.search = new URLSearchParams({
+    reqUrl: proxiedUrlQ,
     'params[location]': userCoords,
     'params[sort]': 'distance',
-    'params[key]': 'AhbgCPRoF1OzG1YBICuTKhcx25nl5X5M',
+    'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
     'params[circle]': userCoordsRadius,
     'params[q]': searchParam,
     'proxyHeaders[Accept]': 'application/json',
-  });
-
-  const getDestination = () => {
-  fetch(url)
+    });
+    fetch(urlQ)
     .then(response => response.json())
     .then(data => {
-      // console.log(data.results[0].displayString);
         setDestination(data.results)
-
-        // place.place.geometry.coordinates
         })
   }
-
-// API CALL FOR GEOCODING THE USER'S ADDRESS
-const proxiedUrl4 = 'https://www.mapquestapi.com/geocoding/v1/address';
-const url4 = new URL('https://proxy.hackeryou.com');
-url4.search = new URLSearchParams({
-  reqUrl: proxiedUrl4,
-  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
-  'proxyHeaders[Accept]': 'application/json',
-  'params[location]': {userInput}
-});
-
-useEffect( () => {
-fetch(url4)
-  .then(response => response.json())
-  .then(data => {
-    console.log(data.results[0].locations[0].latLng);
-    setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
-    console.log(userCoords);
-  });
-}, [])
+  }, [userCoordsRadius, userCoords, searchParam]);
 
 
-  // REVERSE GEOLOCATION TO RETURN STREET ADDRESS
+  // LOCATION TO RETURN STREET ADDRESS
   useEffect( () => {
-    if (userCoords.length>0) {
+    if (toAddress === true) {
+      setToAddress(false);
       const proxiedGeoUrl = 'http://www.mapquestapi.com/geocoding/v1/reverse';
       const geoUrl = new URL('https://proxy.hackeryou.com');
       geoUrl.search = new URLSearchParams({
         reqUrl: proxiedGeoUrl,
-        'params[location]': userCoords,
+        'params[location]': userInput,
         'params[key]': 'AhbgCPRoF1OzG1YBICuTKhcx25nl5X5M',
         'proxyHeaders[Accept]': 'application/json',
       });
-
-
-        fetch(geoUrl)
-          .then(response => response.json())
-          .then(geodata => {
-            // console.log(geodata)
-            setUserInput((geodata.results[0].locations[0].street) + ` ` + (geodata.results[0].locations[0].adminArea4) + ` ` + (geodata.results[0].locations[0].adminArea3))
-          });
+      fetch(geoUrl)
+        .then(response => response.json())
+        .then(geodata => {
+          setUserInput((geodata.results[0].locations[0].street) + ` ` + (geodata.results[0].locations[0].adminArea4) + ` ` + (geodata.results[0].locations[0].adminArea3))
+        });
     }
-}, [userCoords])
+  }, [toAddress, userInput])
 
-// API CALL FOR DIRECTIONS
-const proxiedUrl3 = 'https://www.mapquestapi.com/directions/v2/route';
-const url3 = new URL('https://proxy.hackeryou.com');
-url3.search = new URLSearchParams({
-  reqUrl: proxiedUrl3,
-  'params[key]': 'GvTYDdAzlzCU5UcQ00cnarwGMaBtz8gi',
-  'params[unit]': 'k',
-  'params[routeType]': 'fastest',
-  'params[from]': `8405 avenue de l'epee`,
-  'params[to]': `1000 Rue Legendre O, Montréal, QC H4N`,
-  'params[doReverseGeocode]': false,
-  'params[enhancedNarrative]': false,
-  'params[avoidTimedConditions]': false,
-  'params[narrativeType]': 'text',
-  'proxyHeaders[Accept]': 'application/json',
-  'params[outFormat]': 'JSON',
-});
 
   return (
-      <div className="wrapper">
-        <Header />
-        <Input 
-          getLocation={getLocation} 
-          handleQChange={handleQChange}
-          handleFrom={handleFrom}
-          userInput={userInput}
-          takeMeThere={takeMeThere}
-        />
-        <ListOfPlaces destination={destination} userCoords={userCoords} myJourney={myJourney}/>
-        {/* <Directions from={userCoords}/> */}
-        <Map destination={destination}/>
+    <div className="wrapper appClass">
+      <Header />
+      <Input 
+        getLocation={getLocation} 
+        handleQChange={handleQChange}
+        handleFrom={handleFrom}
+        userInput={userInput}
+        takeMeThere={takeMeThere}
+      />
+      <div className="flexApp">
+        { showMeTheDirections
+          ?
+          destination.map( (place) => {
+            return(
+              <ListOfPlaces 
+              place={place}
+              getDirections={getDirections}
+              setShowMeTheDirections={setShowMeTheDirections}
+              />
+            )
+          })
+          : 
+          <Directions 
+          myJourney={myJourney}
+          setShowMeTheDirections={setShowMeTheDirections}
+          /> 
+        }
+                  {
+            showMeTheMap  
+            ?
+            <Map 
+            userInput={userInput}
+            destination={destination}
+            userCoordsR={userCoordsR}
+            />
+            : 
+            <div>:(</div>
+          }
       </div>
+      
+      {/* <Map 
+      userInput={userInput}
+      destination={destination}
+          /> */}
+
+    </div>
   );
 }
 
