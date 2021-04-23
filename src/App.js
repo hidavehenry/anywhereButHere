@@ -106,6 +106,7 @@ fetch(url4)
   .then(response => response.json())
   .then(data => {
     setUserCoords([data.results[0].locations[0].latLng.lng, data.results[0].locations[0].latLng.lat]);
+    setUserCoordsR([data.results[0].locations[0].latLng.lat, data.results[0].locations[0].latLng.lng]);
   });
 };
 
